@@ -2078,6 +2078,13 @@ void replacetexcube(cube &c, int oldtex, int newtex)
     loopi(6) if(c.texture[i] == oldtex) c.texture[i] = newtex;
     if(c.children) loopi(8) replacetexcube(c.children[i], oldtex, newtex);
 }
+//lookup whether a cube has a face with texture tex
+bool hastexcube(cube &c, int tex)
+{
+    loopi(6) if(c.texture[i] == tex) return true;
+    if(c.children) loopi(8) if(hastexcube(c.children[i], tex)) return true;
+	return false;
+}
 
 void mpreplacetex(int oldtex, int newtex, bool insel, selinfo &sel, bool local)
 {
@@ -2102,12 +2109,69 @@ void replace(bool insel)
 
 ICOMMAND(replace, "", (), replace(false));
 ICOMMAND(replacesel, "", (), replace(true));
-
 //replace texture xy with texture yz in the whole map or just in the selection if third arg given
 ICOMMAND(replacetex, "iii", (int *oldtex, int *newtex, int *insel), {
 	if(noedit()) return;
 	mpreplacetex(*oldtex, *newtex, *insel!=0, sel, true);
 });
+
+void savevslot(JSON *f, int slot)
+{
+	if(slot < 0) return;
+	VSlot &vs = lookupvslot(slot, false);
+    Slot &st = *vs.slot;
+    defformatstring(name)("%s.json", st.sts[TEX_DIFFUSE].name);
+	cutextension(name);
+    f->addchild(JSON_CreateString(name));
+}
+
+// saves the textures of a map into JSON f
+// and merge out all unused ones of the texture-list
+void saveusedvslots(JSON *f)
+{
+	vector<int>usedvslots;
+	loopvk(vslots)
+	{
+		if(k == DEFAULT_GEOM) continue;
+		VSlot &vslot = *vslots[k];
+		if(!vslot.slot || !vslot.linked || !vslot.slot->loaded) continue;
+		loopi(8) if(hastexcube(worldroot[i], k))
+		{
+			usedvslots.add(k); break;
+		}
+	}
+	loopvk(vslots)
+	{
+		if(k <= DEFAULT_GEOM || usedvslots.find(k) != -1) continue;
+		//next used vslot will fill in this "empty" (/unused) vslot	
+		
+		if(usedvslots.length()) 
+		{
+			savevslot(f, usedvslots[0]);
+			mpreplacetex(usedvslots[0], k, false, sel, true); //unused tex replaces used one. changes will apply when map.cfg gets executed
+			usedvslots.remove(0);
+		}
+	}
+}
+
+//for now this will just compact the texture slots
+void generatemapjson(char *filename)
+{
+	if(noedit()) return;
+
+    JSON *root = JSON_CreateObject();
+    JSON *texarray = JSON_CreateArray();
+    root->addchild("textures", texarray);
+
+	saveusedvslots(texarray);
+
+    if(filename && filename[0]) cutextension(filename);
+    defformatstring(fn) ("%s/%s.json", mapdir, filename ? filename : game::getclientmap());
+    root->save(fn);
+
+	delete root;
+}
+ICOMMAND(generatemapjson, "s", (char *s), generatemapjson(s));
 
 ////////// flip and rotate ///////////////
 uint dflip(uint face) { return face==F_EMPTY ? face : 0x88888888 - (((face&0xF0F0F0F0)>>4) | ((face&0x0F0F0F0F)<<4)); }

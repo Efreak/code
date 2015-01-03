@@ -223,6 +223,7 @@ function(target_link_libraries_wrapper BINARYNAME)
                 set(CPP_LIBS_DEBUG ${CURLIB})
             else()
                 set(C_LIBS ${C_LIBS} ${CURLIB})
+
             endif()
         endforeach()
 
@@ -258,7 +259,6 @@ endfunction()
 # see: add_executable
 function(add_app exe )
   message(STATUS "Adding Application: ${exe}")
-
   set(sources ${ARGN})
 
   if(OS_WINDOWS)
@@ -292,13 +292,17 @@ function(opt_subdir subdir initial)
   endif()
 endfunction()
 
+set(CEF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/libraries/cef3")
 include_directories(
     ${ENET_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
+    ${CEF_INCLUDE_DIRS}
     ${MAINDIR}
     ${SOURCE_DIR}/shared
     ${SOURCE_DIR}/engine
     ${SOURCE_DIR}/fpsgame)
+
+add_subdirectory(libraries/cef3/libcef_dll)
 
 add_subdirectory(libraries) # muparser
 declare_module(shared ./shared)

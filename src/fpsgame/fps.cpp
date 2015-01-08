@@ -5,11 +5,7 @@
 ///
 
 #include "game.h"
-#include "include/cef_v8.h"
-#include "ui/cefapp.h"
-#include "ui/ceftypes.h"
-
-extern CefRefPtr<InexorCefApp> cef_app;
+#include "ui/ui.h"
 
 namespace game
 {

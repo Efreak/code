@@ -534,7 +534,8 @@ enum
     TEX_GLOW,
     TEX_SPEC,
     TEX_DEPTH,
-    TEX_ENVMAP
+    TEX_ENVMAP,
+    TEX_NUM
 };
 
 enum 

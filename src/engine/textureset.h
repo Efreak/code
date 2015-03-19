@@ -25,7 +25,7 @@ namespace inexor {
         {
         private:
 
-            /// One entry to the set
+            /// One entry to the set.
             class texentry
             {
             public:
@@ -34,9 +34,6 @@ namespace inexor {
 
                 /// Whether this Slot is usable ingame.
                 bool mounted = false;
-
-                /// Whether or not this Slot is actually just a pointer to another occurence
-                //bool reference = false;
 
                 /// The Texture-Slot
                 Slot *tex;

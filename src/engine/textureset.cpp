@@ -39,7 +39,7 @@ namespace inexor {
 
             Slot &s = *texs.add(new texentry(new Slot(texs.length())))->tex;
             s.loaded = false;
-            loopi(8) //check for all 8 kind of textures
+            loopi(TEX_NUM) //check for all 8 kind of textures
             {
                 JSON *sub = j->getitem(jsontextures[i]);
                 if (!sub) continue;
@@ -90,7 +90,7 @@ namespace inexor {
             {
                 texentry *t = texs[i];
                 int diff = t->tex->texmask & ~t->loadmask; // All textures which havent been loaded yet
-                if(diff) loopi(8) //TODO REPLACE WITH TEX_NUM
+                if(diff) loopi(TEX_NUM)
                 {
                     if(i >= t->tex->sts.length()) break; // out of range
                     if(!(diff & (1 << i))) continue; // not in diff
@@ -104,6 +104,14 @@ namespace inexor {
         void textureset::load()
         {
         
+        }
+
+        void textureset::registerload()
+        {
+            loopv(texs)
+            {
+
+            }
         }
 
         void textureset::mount(bool initial = false)

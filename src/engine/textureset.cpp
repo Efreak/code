@@ -157,6 +157,17 @@ namespace inexor {
             return t;
         }
 
+        void loadset(const char *name)
+        {
+            JSON *j = loadjson(name);
+            if(!j) { conoutf("could not load %s json textureset", name); return; }
+            textureset *t = newtextureset(j);
+            t->echoall();
+            delete j;
+            delete t;
+        }
+        COMMAND(loadset, "s");
+
         ////// Original Loading /////
 
         const struct slottex

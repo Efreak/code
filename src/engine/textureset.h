@@ -66,10 +66,11 @@ namespace inexor {
             void registerload();
 
             /// Add this textureset to the current texture stack of ingame visible textures.
-            /// @param initial if true this textureset becomes the first only one.
+            /// @param initial if true this textureset becomes the first and only one.
             void mount(bool initial);
 
-            /// Mounts remaining textures
+            /// Mounts remaining textures.
+            /// You need to use this after adding textures to a mounted set.
             void mountremaining();
 
             /// Removes this textureset from the current stack of ingame visible textures.

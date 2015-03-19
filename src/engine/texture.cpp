@@ -1289,15 +1289,24 @@ void loadalphamask(Texture *t)
     }
 }
 
-Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
+/// Receives a texture from the hashtable of all loaded textures if name is equal.
+Texture *gettexture(const char *name)
 {
     string tname;
     copystring(tname, name);
-    Texture *t = textures.access(path(tname));
+    return textures.access(path(tname));
+}
+
+Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
+{
+    Texture *t = gettexture(name);
     if(t) return t;
+
+    string tname;
+    copystring(tname, name);
     int compress = 0;
     ImageData s;
-    if(texturedata(s, tname, NULL, msg, &compress)) return newtexture(NULL, tname, s, clamp, mipit, false, false, compress);
+    if(texturedata(s, tname, NULL, msg, &compress)) return newtexture(NULL, tname, s, clamp, mipit, false, false, compress); // TODO THREADSAFETY
     return notexture;
 }
 
@@ -1314,27 +1323,43 @@ MSlot materialslots[(MATF_VOLUME|MATF_INDEX)+1];
 Slot dummyslot;
 VSlot dummyvslot(&dummyslot);
 
-void texturereset(int *n)
+/// Resolves a missing part of the texturestack so following textures wont be effected ingame.
+void rewireslots(int first, int num)
+{
+
+
+}
+
+/// Resets all textures from the slots-stack.
+/// @param first: the texturepos from whereon you want to reset
+/// @param num: the number of slots you want to reset from thereon. All if 0
+/// @example texturereset(0, 40); resets the first 40 textures
+void texturereset(int first, int num)
 {
     if(!(identflags&IDF_OVERRIDDEN) && !game::allowedittoggle()) return;
     resetslotshader();
-    int limit = clamp(*n, 0, slots.length());
-    for(int i = limit; i < slots.length(); i++) 
+    first = clamp(first, 0, slots.length());
+    if(!num) num = slots.length() - first;
+    num = clamp(num, 0, slots.length() - first);
+
+    loopi(num)
     {
-        Slot *s = slots[i];
+        Slot *s = slots.remove(first);
         for(VSlot *vs = s->variants; vs; vs = vs->next) vs->slot = &dummyslot;
         delete s;
     }
-    slots.setsize(limit);
+
     while(vslots.length())
     {
         VSlot *vs = vslots.last();
         if(vs->slot != &dummyslot || vs->changed) break;
         delete vslots.pop();
     }
+
+    rewireslots(first, num);
 }
 
-COMMAND(texturereset, "i");
+ICOMMAND(texturereset, "ii", (int *first, int *last), texturereset(*first, *last));
 
 void materialreset()
 {
@@ -1522,7 +1547,10 @@ static void propagatevslot(VSlot &dst, const VSlot &src, int diff, bool edit = f
     if(diff & (1<<VSLOT_COLOR)) dst.colorscale = src.colorscale;
 }
 
-static void propagatevslot(VSlot *root, int changed)
+/// Apply changes to all following neighbors of root.
+/// Making it accordingly to roots vslot
+/// @param changed includes info about what changed
+void propagatevslot(VSlot *root, int changed)
 {
     for(VSlot *vs = root->next; vs; vs = vs->next)
     {

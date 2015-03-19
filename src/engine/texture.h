@@ -700,6 +700,9 @@ extern int reservevpparams, maxvpenvparams, maxvplocalparams, maxfpenvparams, ma
 extern Shader *lookupshaderbyname(const char *name);
 extern Shader *useshaderbyname(const char *name);
 extern Texture *loadthumbnail(Slot &slot);
+extern void propagatevslot(VSlot *root, int changed);
+extern void texturereset(int first, int num = 0);
+extern Texture *gettexture(const char *name);
 extern void resetslotshader();
 extern void setslotshader(Slot &s);
 extern void linkslotshader(Slot &s, bool load = true);

@@ -1,6 +1,6 @@
 #include <list>
 
-#include "net/MessageConnect.h"
+#include "inexor/net/MessageConnect.h"
 
 #ifndef INEXOR_NET_MULTI_CONNECT_HEADER
 #define INEXOR_NET_MULTI_CONNECT_HEADER

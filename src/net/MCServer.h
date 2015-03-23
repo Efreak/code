@@ -5,9 +5,9 @@
 #include <algorithm>
 #include <iostream>
 
-#include "net/MessageConnect.h"
-#include "net/MCHub.h"
-#include "util/util.h"
+#include "inexor/net/MessageConnect.h"
+#include "inexor/net/MCHub.h"
+#include "inexor/util/util.h"
 
 namespace inexor {
 namespace net {

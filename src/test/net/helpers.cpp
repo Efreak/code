@@ -1,5 +1,5 @@
-#include "test/helpers.h"
-#include "test/net/helpers.h"
+#include "inexor/test/helpers.h"
+#include "inexor/test/net/helpers.h"
 
 #include <sstream>
 #include <algorithm>

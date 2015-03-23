@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 
-#include "test/helpers.h"
+#include "inexor/test/helpers.h"
 
-#include "util/util.h"
+#include "inexor/util/util.h"
 
 using namespace std;
 using namespace inexor::util;

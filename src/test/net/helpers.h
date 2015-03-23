@@ -1,6 +1,6 @@
-#include "test/helpers.h"
+#include "inexor/test/helpers.h"
 
-#include "net/net.h"
+#include "inexor/net/net.h"
 
 #ifndef INEXOR_TEST_NET_HELPERS_HEADER
 #define INEXOR_TEST_NET_HELPERS_HEADER

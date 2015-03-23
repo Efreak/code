@@ -10,9 +10,9 @@
 
 #include <asio.hpp>
 
-#include "net/MessageConnect.h"
-#include "net/MCServer.h"
-#include "net/MCSocket.h"
+#include "inexor/net/MessageConnect.h"
+#include "inexor/net/MCServer.h"
+#include "inexor/net/MCSocket.h"
 
 namespace inexor {
 namespace net {

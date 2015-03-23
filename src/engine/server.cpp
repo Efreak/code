@@ -2,7 +2,7 @@
 // runs dedicated or as client coroutine
 
 #include "engine.h"
-#include "rpc/rpc_sb_compat.h"
+#include "inexor/rpc/rpc_sb_compat.h"
 
 #define LOGSTRLEN 512
 

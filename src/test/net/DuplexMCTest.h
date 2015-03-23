@@ -1,8 +1,8 @@
 #include "gtest/gtest.h"
 
-#include "test/net/SimplexMCTest.h"
+#include "inexor/test/net/SimplexMCTest.h"
 
-#include "net/net.h"
+#include "inexor/net/net.h"
 
 #ifndef INEXOR_TEST_NET_DUPLEX_MC_TEST_HEADER
 #define INEXOR_TEST_NET_DUPLEX_MC_TEST_HEADER

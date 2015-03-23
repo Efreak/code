@@ -295,7 +295,7 @@ endfunction()
 include_directories(
     ${ENET_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
-    ${SOURCE_DIR}
+    ${MAINDIR}
     ${SOURCE_DIR}/shared
     ${SOURCE_DIR}/engine
     ${SOURCE_DIR}/fpsgame)

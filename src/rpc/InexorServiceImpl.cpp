@@ -19,10 +19,10 @@ extern "C" {
 #endif
 
 #include <iostream>
-#include "rpc/InexorServiceImpl.h"
+#include "inexor/rpc/InexorServiceImpl.h"
 
 // Legacy
-#include "shared/cube.h"
+#include "inexor/shared/cube.h"
 
 using namespace google::protobuf;
 

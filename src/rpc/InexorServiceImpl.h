@@ -3,7 +3,7 @@
 
 #include <google/protobuf/service.h>
 
-#include "rpc/inexor_service.pb.h"
+#include "inexor/rpc/inexor_service.pb.h"
 
 namespace inexor {
 namespace rpc {

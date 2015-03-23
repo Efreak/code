@@ -13,21 +13,22 @@ endif()
 
 set(RPC_FILE_DIR ${CMAKE_CURRENT_SOURCE_DIR} CACHE INTERNAL "")
 
-set(protoc_in ${RPC_FILE_DIR}/inexor_service.proto)
-set(protoc_out_cc ${CMAKE_BINARY_DIR}/src/rpc/inexor_service.pb.cc)
+set(protoc_in ${MAINDIR}/inexor/rpc/inexor_service.proto)
+set(protoc_out_cc ${CMAKE_BINARY_DIR}/gen/inexor/rpc/inexor_service.pb.cc)
 set(protoc_out
   ${protoc_out_cc}
-  ${CMAKE_BINARY_DIR}/src/rpc/inexor_service.pb.h)
+  ${CMAKE_BINARY_DIR}/gen/inexor/rpc/inexor_service.pb.h)
+
+file(MAKE_DIRECTORY ${CMAKE_BINARY_DIR}/gen/inexor/)
 
 add_custom_command(
   OUTPUT ${protoc_out}
-  COMMAND ${PROTOC_EXE} --proto_path=${SOURCE_DIR}
-      --cpp_out=${CMAKE_BINARY_DIR}/src ${protoc_in}
-  DEPENDS ${protoc_in})
+  COMMAND ${PROTOC_EXE} --proto_path=${MAINDIR}
+      --cpp_out=${CMAKE_BINARY_DIR}/gen ${protoc_in})
 set_source_files_properties(${protoc_out} PROPERTIES GENERATED TRUE)
 add_custom_target(inexor_protoc DEPENDS ${protoc_out})
 
-set(RPC_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/src/" CACHE INTERNAL "")
+set(RPC_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/gen/" CACHE INTERNAL "")
 
 set_source_files_properties(
   ${protoc_out_cc} PROPERTIES GENERATED TRUE)

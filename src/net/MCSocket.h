@@ -5,7 +5,7 @@
 
 #include <asio.hpp>
 
-#include "net/MCByteBuffer.h"
+#include "inexor/net/MCByteBuffer.h"
 
 #ifndef INEXOR_NET_IOSTREAM_MESSAGE_CONNECT_SOCKET_HEADER
 #define INEXOR_NET_IOSTREAM_MESSAGE_CONNECT_SOCKET_HEADER

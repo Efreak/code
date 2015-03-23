@@ -80,6 +80,7 @@ build configs for windows/VS/mingw.
 **platform_osx** – Submodule that contains libs and build
 configs for Mac OS X. Currently unused.
 
+**include** – Symlink based include paths.
+
 **libraries** – Build config and submodules for several
 libraries: muparser, enet, googletest.
-

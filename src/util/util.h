@@ -1,5 +1,5 @@
 #include <string>
-#include "util/StringFormatter.h"
+#include "inexor/util/StringFormatter.h"
 
 #ifndef INEXOR_UTIL_UTIL_HEADER
 #define INEXOR_UTIL_UTIL_HEADER

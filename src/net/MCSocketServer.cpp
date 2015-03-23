@@ -1,4 +1,4 @@
-#include "net/MCSocketServer.h"
+#include "inexor/net/MCSocketServer.h"
 
 using namespace asio::ip;
 

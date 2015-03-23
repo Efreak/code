@@ -8,7 +8,7 @@
 #include <cstddef>
 #include <cstdint>
 
-#include "net/MessageConnect.h"
+#include "inexor/net/MessageConnect.h"
 
 namespace inexor {
 namespace rpc {

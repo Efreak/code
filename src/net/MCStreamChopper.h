@@ -1,7 +1,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "net/MCByteBuffer.h"
+#include "inexor/net/MCByteBuffer.h"
 
 #ifndef INEXOR_NET_MCSTREAMCHOPPER_HEADER
 #define INEXOR_NET_MCSTREAMCHOPPER_HEADER

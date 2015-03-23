@@ -1,11 +1,11 @@
 // main.cpp: initialisation & main loop
 
-#include "engine.h"
+#include "inexor/engine/engine.h"
 #include "inexor/rpc/rpc_sb_compat.h"
-#include "ui/cefapp.h"
-#include "ui/cefsettings.h"
-#include "ui/cefrenderhandler.h"
-#include "ui/cefrequestcontexthandler.h"
+#include "inexor/ui/cefapp.h"
+#include "inexor/ui/cefsettings.h"
+#include "inexor/ui/cefrenderhandler.h"
+#include "inexor/ui/cefrequestcontexthandler.h"
 #include "include/cef_browser.h"
 #include "include/wrapper/cef_helpers.h"
 

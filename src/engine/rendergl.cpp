@@ -1,7 +1,7 @@
 // rendergl.cpp: core opengl rendering stuff
 
-#include "engine.h"
-#include "ui/cefapp.h"
+#include "inexor/engine/engine.h"
+#include "inexor/ui/cefapp.h"
 #include "include/cef_browser.h"
 #include "include/wrapper/cef_helpers.h"
 

@@ -1,8 +1,8 @@
 #ifndef _CEF_CONTEXT_BINDINGS_H
 #define _CEF_CONTEXT_BINDINGS_H
 
-#include "engine.h"
-#include "fpsgame/game.h"
+#include "inexor/engine/engine.h"
+#include "inexor/fpsgame/game.h"
 
 extern void quit();
 extern void getfps(int &fps, int &bestdiff, int &worstdiff);

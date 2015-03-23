@@ -5,7 +5,7 @@
 
 
 #include "game.h"
-#include "ui/ui.h"
+#include "inexor/ui/ui.h"
 
 namespace entities
 {

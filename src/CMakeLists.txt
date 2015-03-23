@@ -293,19 +293,17 @@ endfunction()
 # Set up a STATIC LIB for the corresponding module.
 # Used for solving source_group issues for some IDEs
 # @example add_lib(net)
-# @sideeffects creates a library called inexor_<modulname>.
+# @sideeffects creates a library called module_<modulname>.
 #
 # see add_library
 function(add_lib module)
     string(TOUPPER ${module} mod)
     string(TOLOWER ${module} mod_lil)
 
-    set(name modul_${mod_lil})
+    set(name module_${mod_lil})
     add_library(${name} STATIC ${${mod}_MODULE_SOURCES} ${${mod}_MODULE_HEADERS})
     
-    
     set(OUTSOURCED_MODULES ${OUTSOURCED_MODULES} ${mod} CACHE INTERNAL "")
-    
 endfunction()
 
 # USAGE: opt_subdir SUBDIR INITIAL

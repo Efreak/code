@@ -25,7 +25,7 @@ add_custom_command(
       --cpp_out=${CMAKE_BINARY_DIR}/src ${protoc_in}
   DEPENDS ${protoc_in})
 set_source_files_properties(${protoc_out} PROPERTIES GENERATED TRUE)
-add_custom_target(inexor_protoc DEPENDS ${protoc_out})
+add_custom_target(run_protoc DEPENDS ${protoc_out})
 
 set(RPC_INCLUDE_DIRS "${CMAKE_BINARY_DIR}/src/" CACHE INTERNAL "")
 
@@ -42,16 +42,15 @@ set(RPC_MODULE_SOURCES ${RPC_MODULE_SOURCES} ${protoc_out_cc}
   CACHE INTERNAL "")
 
 add_lib(rpc)
-config_net(inexor_rpc NOLINK)
+config_net(module_rpc NOLINK)
 
 function(config_rpc targ)
   message(STATUS "Configuring ${targ} with rpc")
 
   add_definitions(-DGOOGLE_PROTOBUF_NO_RTTI)
-  add_dependencies(${targ} inexor_protoc)
+  add_dependencies(${targ} run_protoc)
   include_directories(${PROTOBUF_INCLUDE_DIRS} ${RPC_INCLUDE_DIRS})
-  target_link_libs(${targ} inexor_rpc
-    inexor_net ${PROTOBUF_LIBRARIES})
+  target_link_libs(${targ} module_rpc ${PROTOBUF_LIBRARIES})
   config_net(${targ})
 endfunction()
 

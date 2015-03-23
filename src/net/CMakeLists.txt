@@ -26,6 +26,6 @@ function(config_net targ)
 
   include_directories(${ASIO_INCLUDE_DIRS})
   if (NOT ";${ARGN};" MATCHES ";NOLINK;")
-    target_link_libs(${targ} inexor_net)
+    target_link_libs(${targ} module_net)
   endif()
 endfunction()

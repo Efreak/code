@@ -7,5 +7,5 @@ add_lib(util)
 function(config_util targ)
   message(STATUS "Configuring ${targ} with util")
 
-  target_link_libs(${targ} inexor_util)
+  target_link_libs(${targ} module_util)
 endfunction()

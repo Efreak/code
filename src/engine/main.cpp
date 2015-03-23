@@ -1,7 +1,7 @@
 // main.cpp: initialisation & main loop
 
 #include "engine.h"
-#include "rpc/rpc_sb_compat.h"
+#include "inexor/rpc/rpc_sb_compat.h"
 
 // extern functions and data here
 extern void cleargamma();

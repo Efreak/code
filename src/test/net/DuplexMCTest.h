@@ -2,8 +2,8 @@
 #define INEXOR_TEST_NET_DUPLEX_MC_TEST_HEADER
 
 #include "gtest/gtest.h"
-#include "test/net/SimplexMCTest.h"
-#include "net/net.h"
+#include "inexor/test/net/SimplexMCTest.h"
+#include "inexor/net/net.h"
 
 template<typename T_other>
 class DuplexMCTest_SwapProvider : public SimplexMCTest_Provider {

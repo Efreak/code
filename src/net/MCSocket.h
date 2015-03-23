@@ -8,7 +8,7 @@
 
 #include <asio.hpp>
 
-#include "net/MCByteBuffer.h"
+#include "inexor/net/MCByteBuffer.h"
 
 namespace inexor {
 namespace net {

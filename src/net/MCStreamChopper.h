@@ -4,7 +4,7 @@
 #include <stdexcept>
 #include <iostream>
 
-#include "net/MCByteBuffer.h"
+#include "inexor/net/MCByteBuffer.h"
 
 namespace inexor {
 namespace net {

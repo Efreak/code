@@ -2,8 +2,8 @@
 
 #include <cstddef>
 
-#include "net/MessageConnect.h"
-#include "net/MCHub.h"
+#include "inexor/net/MessageConnect.h"
+#include "inexor/net/MCHub.h"
 
 using namespace std;
 

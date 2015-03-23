@@ -1,12 +1,12 @@
 #ifndef INEXOR_NET_NET_HEADER
 #define INEXOR_NET_NET_HEADER
 
-#include "net/MessageConnect.h"
-#include "net/MCHub.h"
-#include "net/MCByteBuffer.h"
-#include "net/MCStreamChopper.h"
-#include "net/MCServer.h"
-#include "net/MCSocketServer.h"
-#include "net/MCSocket.h"
+#include "inexor/net/MessageConnect.h"
+#include "inexor/net/MCHub.h"
+#include "inexor/net/MCByteBuffer.h"
+#include "inexor/net/MCStreamChopper.h"
+#include "inexor/net/MCServer.h"
+#include "inexor/net/MCSocketServer.h"
+#include "inexor/net/MCSocket.h"
 
 #endif

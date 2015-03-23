@@ -3,10 +3,10 @@
 
 #include "gtest/gtest.h"
 
-#include "test/helpers.h"
-#include "test/net/helpers.h"
+#include "inexor/test/helpers.h"
+#include "inexor/test/net/helpers.h"
 
-#include "net/net.h"
+#include "inexor/net/net.h"
 
 #include <utility>
 #include <list>

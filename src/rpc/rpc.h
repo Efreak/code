@@ -3,13 +3,13 @@
 
 // Convenience Header
 
-#include "net/MCServer.h"
+#include "inexor/net/MCServer.h"
 
-#include "rpc/inexor_service.pb.h"
-#include "rpc/InexorServiceImpl.h"
-#include "rpc/MCRpcServer.h"
+#include "inexor/rpc/inexor_service.pb.h"
+#include "inexor/rpc/InexorServiceImpl.h"
+#include "inexor/rpc/MCRpcServer.h"
 
-#include "rpc/rpc_sb_compat.h"
+#include "inexor/rpc/rpc_sb_compat.h"
 
 namespace inexor {
 namespace rpc {

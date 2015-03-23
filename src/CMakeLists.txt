@@ -152,8 +152,8 @@ endfunction()
 
 # USAGE: group_modules()
 #
-# Set up Source_groups for VS/XCode
-# Has to be called for every target
+# Set up Source_groups for VS/XCode.
+# Does not need to be called normally, except you are not using add_app
 #
 function(group_modules)
     foreach(mod ${ALL_MODULES})
@@ -268,7 +268,9 @@ endfunction()
 # see: add_executable
 function(add_app exe )
   message(STATUS "Adding Application: ${exe}")
-
+  
+  group_modules()
+  
   set(sources ${ARGN})
 
   if(OS_WINDOWS)

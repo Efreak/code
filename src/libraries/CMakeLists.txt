@@ -58,3 +58,64 @@ function(config_gtest targ)
   include_directories(${GTEST_INCLUDE_DIRS})
   target_link_libraries_wrapper(${targ} gtest)
 endfunction()
+
+#### CEF
+
+set(CEF_INCLUDE_DIRS "${SOURCE_DIR}/libraries/cef3" CACHE INTERN "")
+include_directories(${CEF_INCLUDE_DIRS})
+
+if(NOT DEFINED LIBCEF_DLL_LIBRARIES AND NOT DEFINED LOCAL_LIBCEF_DLL)
+  set(LOCAL_LIBCEF_DLL 1 CACHE INTERNAL "Use local libcef_dll library")
+elseif(DEFINED LOCAL_LIBCEF_DLL)
+  set(LOCAL_LIBCEF_DLL ${LOCAL_LIBCEF_DLL} CACHE INTERNAL "Use local libcef_dll library")
+else()
+  set(LOCAL_LIBCEF_DLL 0 CACHE INTERNAL "Use local libcef_dll library")
+endif()
+
+if(${LOCAL_LIBCEF_DLL})
+    message(STATUS "Building local libcef_dll")
+    add_subdirectory(${SOURCE_DIR}/libraries/cef3/libcef_dll)
+endif()
+
+set(CMAKE_SKIP_BUILD_RPATH FALSE)
+set(CEF_DLL_LIBRARY "libcef_dll_wrapper")
+set(CEF_BASE_DIR "${PROJECT_SOURCE_DIR}/src/libraries/cef3")
+set(ICUDTL_DAT "${CEF_BASE_DIR}/Resources/icudtl.dat")
+if(OS_LINUX)
+  set(CEF_LINUX_DIR "${CEF_BASE_DIR}/cef_bin/linux")
+  if(X64)
+    set(CEF_LINUX_X86_64_DIR "${CEF_LINUX_DIR}/bin_x86_64")
+    set(UDEV_LIBRARY "${CEF_LINUX_X86_64_DIR}/libudev.so")
+    set(CEF_LIBRARY "${CEF_LINUX_X86_64_DIR}/libcef.so")
+    set(FFMPEGSUMO_LIBRARY "${CEF_LINUX_X86_64_DIR}/libffmpegsumo.so")
+    set(CHROME_SANDBOX_BIN "${CEF_LINUX_X86_64_DIR}/chrome-sandbox")
+  else()
+    set(CEF_LINUX_X86_DIR "${CEF_LINUX_DIR}/bin_x86")
+    set(UDEV_LIBRARY "${CEF_LINUX_X86_DIR}/libudev.so")
+    set(CEF_LIBRARY "${CEF_LINUX_X86_DIR}/libcef.so")
+    set(FFMPEGSUMO_LIBRARY "${CEF_LINUX_X86_DIR}/libffmpegsumo.so")
+    set(CHROME_SANDBOX_BIN "${CEF_LINUX_X86_DIR}/chrome-sandbox")
+  endif()
+elseif(OS_WINDOWS)
+  if(X64)
+    set(CEF_LIBRARY "${CEF_BASE_DIR}/cef_bin/windows/lib64/libcef.lib")
+  else()
+    set(CEF_LIBRARY "${CEF_BASE_DIR}/cef_bin/windows/lib32/libcef.lib")
+  endif()
+endif()
+
+set(CEF_LIBRARIES "${CEF_DLL_LIBRARY};-Wl,-rpath,. ${CEF_LIBRARY};-Wl,-rpath,. ${UDEV_LIBRARY}" CACHE INTERNAL "")
+
+function(config_cef targ)
+  message(STATUS "Configuring ${targ} with CEF")
+
+  include_directories(${CEF_INCLUDE_DIRS})
+
+  if (NOT ";${ARGN};" MATCHES ";NOLINK;")
+    target_link_libraries_wrapper(${targ} ${CEF_LIBRARIES})
+
+    install(TARGETS ${UDEV_LIBRARY} ${CEF_LIBRARY}
+      ${FFMPEGSUMO_LIBRARY} ${CHROME_SANDBOX_BIN}
+      ${ICUDTL_DAT} DESTINATION ${EXE_DIR})
+  endif()
+endfunction()

@@ -223,7 +223,6 @@ function(target_link_libraries_wrapper BINARYNAME)
                 set(CPP_LIBS_DEBUG ${CURLIB})
             else()
                 set(C_LIBS ${C_LIBS} ${CURLIB})
-
             endif()
         endforeach()
 
@@ -259,6 +258,7 @@ endfunction()
 # see: add_executable
 function(add_app exe )
   message(STATUS "Adding Application: ${exe}")
+
   set(sources ${ARGN})
 
   if(OS_WINDOWS)
@@ -292,28 +292,13 @@ function(opt_subdir subdir initial)
   endif()
 endfunction()
 
-set(CEF_INCLUDE_DIRS "${PROJECT_SOURCE_DIR}/src/libraries/cef3")
 include_directories(
     ${ENET_INCLUDE_DIRS}
     ${SDL2_INCLUDE_DIRS}
-    ${CEF_INCLUDE_DIRS}
     ${MAINDIR}
     ${SOURCE_DIR}/shared
     ${SOURCE_DIR}/engine
     ${SOURCE_DIR}/fpsgame)
-
-if(NOT DEFINED LIBCEF_DLL_LIBRARIES AND NOT DEFINED LOCAL_LIBCEF_DLL)
-    set(LOCAL_LIBCEF_DLL 1 CACHE INTERNAL "Use local libcef_dll library")
-elseif(DEFINED LOCAL_LIBCEF_DLL)
-    set(LOCAL_LIBCEF_DLL ${LOCAL_LIBCEF_DLL} CACHE INTERNAL "Use local libcef_dll library")
-else()
-    set(LOCAL_LIBCEF_DLL 0 CACHE INTERNAL "Use local libcef_dll library")
-endif()
-
-if(${LOCAL_LIBCEF_DLL})
-    message(STATUS "Building local libcef_dll")
-    add_subdirectory(libraries/cef3/libcef_dll)
-endif()
 
 add_subdirectory(libraries) # muparser
 declare_module(shared ./shared)
@@ -322,6 +307,7 @@ declare_module(fpsgame ./fpsgame)
 add_subdirectory(util)
 add_subdirectory(net) # net module, asio lib
 add_subdirectory(rpc) # rpc module, protobuf lib
+add_subdirectory(ui)
 
 # *sigh* We can't make shared a real module. Yet.
 # It's too interdependant

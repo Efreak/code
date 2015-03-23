@@ -41,7 +41,7 @@ declare_module(rpc .)
 set(RPC_MODULE_SOURCES ${RPC_MODULE_SOURCES} ${protoc_out_cc}
   CACHE INTERNAL "")
 
-add_library(inexor_rpc STATIC ${RPC_MODULE_SOURCES})
+add_lib(rpc)
 config_net(inexor_rpc NOLINK)
 
 function(config_rpc targ)
@@ -50,7 +50,7 @@ function(config_rpc targ)
   add_definitions(-DGOOGLE_PROTOBUF_NO_RTTI)
   add_dependencies(${targ} inexor_protoc)
   include_directories(${PROTOBUF_INCLUDE_DIRS} ${RPC_INCLUDE_DIRS})
-  target_link_libraries_wrapper(${targ} inexor_rpc
+  target_link_libs(${targ} inexor_rpc
     inexor_net ${PROTOBUF_LIBRARIES})
   config_net(${targ})
 endfunction()

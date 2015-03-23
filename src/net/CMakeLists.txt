@@ -3,16 +3,12 @@
 message(STATUS "Detecting ASIO...")
 find_path(ASIO_INCLUDE_DIRS asio.hpp)
 
-# WINSOCK #################
-# (required by asio on win)
-
-find_cpp_library(WINSOCK_LIBS ws2_32 )
-
 # NET MODULE ##############
 
 declare_module(net .)
 
-add_library(inexor_net STATIC ${NET_MODULE_SOURCES})
+include_directories(${ASIO_INCLUDE_DIRS})
+add_lib(net)
 
 if (NOT ${CMAKE_CXX_COMPILER_ID} STREQUAL "Clang")
   message(STATUS "Using ASIO in standalone mode")
@@ -30,10 +26,6 @@ function(config_net targ)
 
   include_directories(${ASIO_INCLUDE_DIRS})
   if (NOT ";${ARGN};" MATCHES ";NOLINK;")
-    target_link_libraries_wrapper(${targ} inexor_net)
-
-    if (WIN32)
-      target_link_libraries_wrapper(${targ} ${WINSOCK_LIBS})
-    endif()
+    target_link_libs(${targ} inexor_net)
   endif()
 endfunction()

@@ -65,7 +65,7 @@ add_definitions(-DCLIENT)
 if(OS_LINUX)
     set(ADDITIONAL_LIBRARIES ${ADDITIONAL_LIBRARIES} dl rt)
 elseif(OS_MACOSX)
-  set(CLIENT_SOURCES ${CLIENT_SOURCES} engine/macutils.mm)
+    set(CLIENT_SOURCES ${CLIENT_SOURCES} engine/macutils.mm)
 elseif(OS_WINDOWS)
     set(ADDITIONAL_LIBRARIES ${ADDITIONAL_LIBRARIES} opengl32)
 
@@ -77,7 +77,7 @@ elseif(OS_WINDOWS)
 endif()
 
 add_app(${CLIENT_BINARY} ${CLIENT_SOURCES})
-target_link_libraries_wrapper(${CLIENT_BINARY}
+target_link_libs(${CLIENT_BINARY}
   ${COMMON_LIBS}
   ${SDL2_LIBRARIES}
   ${OPENGL_LIBRARIES}

@@ -703,6 +703,7 @@ extern Shader *useshaderbyname(const char *name);
 extern Texture *loadthumbnail(Slot &slot);
 extern void propagatevslot(VSlot *root, int changed);
 extern void texturereset(int first, int num = 0);
+extern void registertexture(const char *name);
 extern Texture *gettexture(const char *name);
 extern void resetslotshader();
 extern void setslotshader(Slot &s);

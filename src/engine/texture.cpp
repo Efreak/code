@@ -721,7 +721,7 @@ int texalign(void *data, int w, int bpp)
     if(address&4) return 4;
     return 8;
 }
-    
+
 static Texture *newtexture(Texture *t, const char *rname, ImageData &s, int clamp = 0, bool mipit = true, bool canreduce = false, bool transient = false, int compress = 0)
 {
     if(!t)
@@ -1289,6 +1289,15 @@ void loadalphamask(Texture *t)
     }
 }
 
+/// Registers a texture to the texture registry, so it wont be loaded twice (but looked up the other time).
+void registertexture(const char *name)
+{
+    char *key = newstring(name);
+    path(key);
+    Texture *t = &textures[key];
+    t->name = key;
+}
+
 /// Receives a texture from the hashtable of all loaded textures if name is equal.
 Texture *gettexture(const char *name)
 {
@@ -1297,16 +1306,28 @@ Texture *gettexture(const char *name)
     return textures.access(path(tname));
 }
 
-Texture *textureload(const char *name, int clamp, bool mipit, bool msg)
+/// @param clamp
+/// @param mipit specifies whether mipmap (lower quality versions; usually used when far away or small) textures should be created.
+/// @param msg specifies whether a renderprogress bar should be displayed while loading. Always off if threadsafe = true.
+/// @param threadsafe if true, the texture wont be automatically registerd to the global texture registry,
+///        you need to check whether it is loaded via gettexture beforehand in a nonthreaded environment and register it afterwards
+///        with registertexture.
+Texture *textureload(const char *name, int clamp, bool mipit, bool msg, bool threadsafe)
 {
-    Texture *t = gettexture(name);
-    if(t) return t;
+    Texture *t;
+
+    if(!threadsafe)
+    {
+        t = gettexture(name);
+        if(t) return t;
+    }
+    else t = new Texture;
 
     string tname;
     copystring(tname, name);
     int compress = 0;
     ImageData s;
-    if(texturedata(s, tname, NULL, msg, &compress)) return newtexture(NULL, tname, s, clamp, mipit, false, false, compress); // TODO THREADSAFETY
+    if(texturedata(s, tname, NULL, msg && !threadsafe, &compress)) return newtexture(threadsafe ? t : NULL, tname, s, clamp, mipit, false, false, compress);
     return notexture;
 }
 
@@ -1326,7 +1347,7 @@ VSlot dummyvslot(&dummyslot);
 /// Resolves a missing part of the texturestack so following textures wont be effected ingame.
 void rewireslots(int first, int num)
 {
-
+    // TODO
 
 }
 

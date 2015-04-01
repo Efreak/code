@@ -32,16 +32,17 @@ namespace inexor {
 
         void textureset::addtexture(JSON *j)
         {
-            if (!j || texs.length() >= 0x10000) return;
+            if(!j || texs.length() >= 0x10000) return;
 
             Slot &s = *texs.add(new texentry(new Slot(texs.length())))->tex;
             s.loaded = false;
             loopi(TEX_NUM) //check for all 8 kind of textures
             {
                 JSON *sub = j->getitem(jsontextures[i]);
-                if (!sub) continue;
+                if(i == TEX_DIFFUSE && !sub) return; // other stuff wont work?
+                else if(!sub) continue;
                 char *name = sub->valuestring;
-                if (!*name) continue;
+                if(!*name) continue;
                 s.texmask |= 1 << i;
                 Slot::Tex &st = s.sts.add();
                 st.type = i;
@@ -87,7 +88,8 @@ namespace inexor {
             {
                 texentry *t = texs[i];
                 int diff = t->tex->texmask & ~t->loadmask; // All textures which havent been loaded yet
-                if(diff) loopk(TEX_NUM)
+                if(!diff) continue;
+                loopk(TEX_NUM)
                 {
                     if(k >= t->tex->sts.length()) break; // out of range
                     if(!(diff & (1 << k))) continue; // not in diff
@@ -100,14 +102,33 @@ namespace inexor {
 
         void textureset::load()
         {
-        
+            loopv(texs)
+            {
+                texentry *t = texs[i];
+                int needload = t->tex->texmask & ~t->loadmask;
+                if(!needload) continue;
+                loopk(TEX_NUM)
+                {
+                    if(k >= t->tex->sts.length()) break; // out of range
+                    if(!(needload & (1 << k))) continue; // not in diff
+                    Slot::Tex &st = t->tex->sts[k];
+                    st.t = textureload(st.name, 0, true, false, true);
+                    if(st.t != notexture) t->needregister |= 1 << k; // remember to register
+                }
+            }            
         }
 
         void textureset::registerload()
         {
             loopv(texs)
             {
-
+                texentry *t = texs[i];
+                if(!t->needregister) continue;
+                loopk(TEX_NUM)
+                {
+                    if(k >= t->tex->sts.length()) break; // out of range
+                    if(t->needregister & (1 << k)) registertexture(t->tex->sts[k].name);       
+                }
             }
         }
 
@@ -157,7 +178,7 @@ namespace inexor {
         void loadset(const char *name)
         {
             JSON *j = loadjson(name);
-            if(!j) { conoutf("could not load %s json textureset", name); return; }
+            if(!j) { conoutf("could not load %s textureset", name); return; }
             textureset *t = newtextureset(j);
             t->echoall();
             delete j;

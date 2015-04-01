@@ -29,6 +29,9 @@ namespace inexor {
                 /// A bitmask containing which of the 8 textures of the slot already have been loaded.
                 int loadmask = 0;
 
+                /// A bitmask containing which of the 8 textures of the slot have been loaded in a thread and need a registration now.
+                int needregister = 0;
+
                 /// Whether this Slot is usable ingame.
                 bool mounted = false;
 

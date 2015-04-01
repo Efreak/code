@@ -80,7 +80,7 @@ namespace inexor {
             void echoall()
             {
                 loopv(texs) {
-                    if(texs[i]->tex->sts.length())  conoutf("tex %d: %s", i, texs[i]->tex->sts.last().name);
+                    loopvk(texs[i]->tex->sts)  conoutf("tex %d.%d: %s", i, k, texs[i]->tex->sts[k].name);
                 }
             }
         };

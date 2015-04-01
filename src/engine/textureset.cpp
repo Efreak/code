@@ -180,9 +180,14 @@ namespace inexor {
             JSON *j = loadjson(name);
             if(!j) { conoutf("could not load %s textureset", name); return; }
             textureset *t = newtextureset(j);
-            t->echoall();
+
             delete j;
-            delete t;
+            t->echoall();
+            t->checkload();
+            t->load();
+            t->registerload();
+            t->mount();
+            //delete t;
         }
         COMMAND(loadset, "s");
 
@@ -333,6 +338,19 @@ namespace inexor {
             s.ffenv = *ffenv>0;
         }
         COMMAND(texffenv, "i");
+
+        void debugslots()
+        {
+            int numtexs = 0;
+            loopv(slots)
+            {
+                loopvk(slots[i]->sts) conoutf("%d (%d): %s", i, k, slots[i]->sts[k].name);
+                numtexs += slots[i]->sts.length();
+            }
+            conoutf("%d slots taken..", slots.length());
+            conoutf("having %d textures", numtexs);
+        }
+        COMMAND(debugslots, "");
     } // namespace textureset
 }     // namespace inexor
 

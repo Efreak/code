@@ -46,7 +46,7 @@ root_install() {
   apt-get -y install zlib1g-dev libsdl2-dev         \
     libsdl2-image-dev libsdl2-mixer-dev libenet-dev \
     libprotobuf-dev protobuf-compiler wget          \
-    libboost-system1.55-dev
+    libboost-system1.55-dev doxygen
 
   (
     cd /tmp;
@@ -72,10 +72,21 @@ upload_file() {
   )
 }
 
+upload_recurse() {
+  (
+    local d="`dirname $1`" n="`basename "$1"`"
+    cd "$d"
+    find "$n" -type f | while read f; do
+      upload "$f" "$2/`dirname $f`"
+    done
+  )
+}
+
 nigthly_build() {
   local outd="/tmp/${build}.d/"
   local zipf="/tmp/${build}.zip"
   local descf="/tmp/${build}.txt"
+  local docd="/tmp/${build}-apidoc"
 
   # Include the media files
   local media="${media}"
@@ -93,6 +104,7 @@ nigthly_build() {
     gitroot: ${gitroot}
     zip: ${zipf}
     dir: ${outd}
+    docd: ${docd}
 
     data export: $media
   "
@@ -105,9 +117,17 @@ nigthly_build() {
     rm -rf data/.git/
   ) fi
 
+  (
+    cd "$gitroot" -v
+    doxygen doxygen.conf
+    cp -rv "doc/html/" "$outd"
+    cp -rv "doc/html/" "$docd"
+  )
+
   local ignore="
     .gitignore
     build
+    doc
     CMakeLists.txt
     doxygen.conf
     .git
@@ -133,9 +153,9 @@ nigthly_build() {
     sha512sum "$zipf"
   ) > "$descf"
 
-  echo "Uploading: ${zipf} and $descf"
-  upload_file "$zipf" &
+  upload_file "$zipf"
   upload_file "$descf"
+  upload_recurse "$docd"
 
   return 0
 }

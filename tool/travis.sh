@@ -120,14 +120,12 @@ nigthly_build() {
   (
     cd "$gitroot" -v
     doxygen doxygen.conf
-    cp -rv "doc/html/" "$outd"
-    cp -rv "doc/html/" "$docd"
+    cp -rv doc/ "$docd"
   )
 
   local ignore="
     .gitignore
     build
-    doc
     CMakeLists.txt
     doxygen.conf
     .git

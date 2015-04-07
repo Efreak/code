@@ -10,6 +10,7 @@ static VSlot *emptyvslot(Slot &owner);
 
 namespace inexor {
     namespace textureset {
+        SVARP(texturedir, "media/texture");
 
         const char *jsontextures[8] = { "diffuse", "other", "decal", "normal", "glow", "spec", "depth", "envmap" };
 
@@ -25,15 +26,16 @@ namespace inexor {
                 if(i == TEX_DIFFUSE && !sub) return; // other stuff wont work?
                 else if(!sub) continue;
                 char *name = sub->valuestring;
-                if(!*name) continue;
+                if(!name) continue;
                 s.texmask |= 1 << i;
                 Slot::Tex &st = s.sts.add();
                 st.type = i;
                 st.combined = -1;
                 st.t = NULL;
 
-                if (strpbrk(name, "/\\") && *sub->currentfile) copystring(st.name, makerelpath(parentdir(sub->currentfile), name)); //path relative to current folder
-                else copystring(st.name, name);
+                if(name[0] == '/') copystring(st.name, makerelpath(texturedir, name)); //path relative to texture folder
+                else copystring(st.name, makerelpath(parentdir(sub->currentfile), name)); //path relative to current folder
+
                 path(st.name);
             }
             if(!s.sts.length()) return; // no textures found
@@ -173,6 +175,23 @@ namespace inexor {
             //delete t;
         }
         COMMAND(loadset, "s");
+
+        /// Scan Texturedir for texturesets.
+        void scantexturedir()
+        {
+            vector<char *> files;
+            listfiles(texturedir, "json", files);
+
+            if(!files.length()) return;
+            textureset *t = new textureset();
+            loopv(files) t->addtexture(files[i]);
+
+            t->checkload();
+            t->load();
+            t->registerload();
+            t->mount();
+        }
+        COMMAND(scantexturedir, "");
     } // namespace textureset
 }     // namespace inexor
 
@@ -239,8 +258,9 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
     st.type = tnum;
     st.combined = -1;
     st.t = NULL;
-    if(name && strpbrk(name, "/\\")) copystring(st.name, makerelpath(getcurexecdir(), name)); //relative path to current folder
-    else copystring(st.name, name);
+    if(name && strpbrk(name, "/\\")) copystring(st.name, makerelpath(inexor::textureset::texturedir, name));
+    else copystring(st.name, makerelpath(getcurexecdir(), name)); //relative path to current folder
+
     path(st.name);
     if(tnum == TEX_DIFFUSE)
     {

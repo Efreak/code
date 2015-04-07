@@ -2272,6 +2272,43 @@ static inline bool sortidents(ident *x, ident *y)
     return strcmp(x->name, y->name) < 0;
 }
 
+//cuts the extension of string str. if extension ext is specified, just this extension will be cut
+void cutextension(char *str, char *ext)
+{
+	if(!str) return;
+	int len = strlen(str);
+	char *pos = NULL;
+	loopirev(len) if(str[i] == '.') { pos = &str[i]; break; }
+	if(ext && ext[0] == '.') ext++;
+	if(pos && (!ext || !strcmp(pos+1, ext))) pos[0] = '\0';
+}
+
+ICOMMAND(cutextension, "ss", (char *str, char *ext), 
+	cutextension(str, ext && ext[0] ? ext : NULL);
+	result(str ? str : ""); 
+);
+
+static time_t systime = 0;
+static string timebuf;
+
+//returns the time in the given format
+const char *gettimestr(const char *format, bool forcelowercase)
+{
+	if(!systime) { systime = time(NULL); systime -= totalmillis/1000; if(!systime) systime++; }
+    time_t timeoffset = systime + totalmillis/1000;
+    strftime(timebuf, sizeof(timebuf), format, localtime(&timeoffset));
+
+    if(forcelowercase)// hack because not all platforms (windows) support %P lowercase option // also strip leading 0 from 12 hour time
+    {
+        char *dst = timebuf;
+        const char *src = &timebuf[timebuf[0]=='0' ? 1 : 0];
+        while(*src) *dst++ = tolower(*src++);
+        *dst++ = '\0'; 
+    }
+	return timebuf;
+}
+ICOMMAND(gettimestr, "si", (const char *format, int *forcecase), gettimestr(format, *forcecase!=0));
+
 void writecfg(const char *name)
 {
     stream *f = openutf8file(path(name && name[0] ? name : game::savedconfig(), true), "w");

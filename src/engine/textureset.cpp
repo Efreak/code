@@ -160,10 +160,10 @@ namespace inexor {
             return t;
         }
 
-        void loadset(const char *name)
+        bool loadset(const char *name)
         {
             JSON *j = loadjson(name);
-            if(!j) { conoutf("could not load %s textureset", name); return; }
+            if(!j) { conoutf("could not load %s textureset", name); return false; }
             textureset *t = newtextureset(j);
 
             delete j;
@@ -173,6 +173,7 @@ namespace inexor {
             t->registerload();
             t->mount();
             //delete t;
+            return true;
         }
         COMMAND(loadset, "s");
 

@@ -1,6 +1,7 @@
 // worldio.cpp: loading & saving of maps and savegames
 
 #include "engine.h"
+#include "textureset.h"
 
 SVARP(mediadir, "media");
 SVARP(mapdir, "media/map");
@@ -168,7 +169,7 @@ bool loadents(const char *fname, vector<entity> &ents, uint *crc)
 
 #ifndef STANDALONE
 
-string ogzname, bakname, cfgname, picname;
+string ogzname, bakname, cfgname, jsonname, picname;
 
 /// all map files will be backuped as .BAK files when changes will be saved
 VARP(savebak, 0, 2, 2);
@@ -187,12 +188,14 @@ void setmapfilenames(const char *fname, const char *cname = 0)
     formatstring(ogzname)("%s.ogz", mapname);
     if(savebak==1) formatstring(bakname)("%s.BAK", mapname);
     else formatstring(bakname)("%s_%d.BAK", mapname, totalmillis);
-    formatstring(cfgname)("%s.cfg", mapname);
+    formatstring(cfgname)("%s.cfg", mapname);    
+    formatstring(jsonname)("%s.json", mapname);
     formatstring(picname)("%s.jpg", mapname);
 
     path(ogzname);
     path(bakname);
     path(cfgname);
+    path(jsonname);
     path(picname);
 }
 
@@ -1133,7 +1136,6 @@ void savecurrentmap()
 }
 COMMAND(savecurrentmap, "");
 
-
 /// save map data to a map file
 /// @param mname map name
 void savemap(char *mname)
@@ -1142,14 +1144,8 @@ void savemap(char *mname)
 }
 COMMAND(savemap, "s");
 
-
-
-
-
 /// CRC32 is a checksum (and error detection) algorithm to generate map checksums
-/// so servers can detect modified maps (mostly cheaters)
-/// http://reveng.sourceforge.net/crc-catalogue/all.htm
-/// http://en.wikipedia.org/wiki/Cyclic_redundancy_check#cite_note-cook-catalogue-8
+/// so servers can detect modified maps
 
 /// @warning use getmapcrc() and clearmapcrc() to access/clear the checksum do NOT directly access it!
 static uint mapcrc = 0;
@@ -1165,7 +1161,6 @@ void clearmapcrc()
 {
     mapcrc = 0;
 }
-
 
 bool load_world(const char *mname, const char *cname)        // still supports all map formats that have existed since the earliest cube betas!
 {
@@ -1414,6 +1409,9 @@ bool load_world(const char *mname, const char *cname)        // still supports a
     identflags |= IDF_OVERRIDDEN;
     execfile("config/default_map_settings.cfg", false);
     execfile(cfgname, false);
+    
+    inexor::textureset::loadset(jsonname);
+
     identflags &= ~IDF_OVERRIDDEN;
    
     extern void fixlightmapnormals();

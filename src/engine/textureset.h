@@ -86,6 +86,7 @@ namespace inexor {
         };
 
         extern textureset *newtextureset(JSON *parent);
+        extern bool loadset(const char *name);
 
     } // namespace textureset
 }     // namespace inexor

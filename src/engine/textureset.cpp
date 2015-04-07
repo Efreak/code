@@ -1,8 +1,5 @@
 ///  Texturesets are used to load texture-stacks asynchronously
 ///
-///  Author: Malte "a_teammate" Haase
-///  Date:   15.03.2015
-///
 
 #include "engine.h"
 #include "texture.h"
@@ -51,7 +48,7 @@ namespace inexor {
                 st.combined = -1;
                 st.t = NULL;
 
-                if (strpbrk(name, "/\\") && *sub->currentdir) copystring(st.name, makerelpath(sub->currentdir, name)); //path relative to current folder
+                if (strpbrk(name, "/\\") && *sub->currentfile) copystring(st.name, makerelpath(parentdir(sub->currentfile), name)); //path relative to current folder
                 else copystring(st.name, name);
                 path(st.name);
             }
@@ -90,13 +87,13 @@ namespace inexor {
             {
                 texentry *t = texs[i];
                 int diff = t->tex->texmask & ~t->loadmask; // All textures which havent been loaded yet
-                if(diff) loopi(TEX_NUM)
+                if(diff) loopk(TEX_NUM)
                 {
-                    if(i >= t->tex->sts.length()) break; // out of range
-                    if(!(diff & (1 << i))) continue; // not in diff
-                    Slot::Tex &curimg = t->tex->sts[i];
+                    if(k >= t->tex->sts.length()) break; // out of range
+                    if(!(diff & (1 << k))) continue; // not in diff
+                    Slot::Tex &curimg = t->tex->sts[k];
                     curimg.t = gettexture(curimg.name);
-                    if(curimg.t) t->loadmask |= 1 << i; //save to loadmask on success
+                    if(curimg.t) t->loadmask |= 1 << k; //save to loadmask on success
                 }
             }
         }
@@ -151,7 +148,7 @@ namespace inexor {
             {
                 const char *name = j->getstring(i);
                 defformatstring(fn) ("%s", name);
-                if (strpbrk(name, "/\\")) formatstring(fn)("%s", makerelpath(j->currentdir, name)); //relative path to current folder
+                if (strpbrk(name, "/\\")) formatstring(fn)("%s", makerelpath(parentdir(j->currentfile), name)); //relative path to current folder
                 t->addtexture(fn);
             }
             return t;

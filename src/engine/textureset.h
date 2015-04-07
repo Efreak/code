@@ -1,8 +1,5 @@
 ///  Texturesets are used to load texture-stacks asynchronously
 ///
-///  Author: Malte "a_teammate" Haase
-///  Date:   15.03.2015
-///
 
 ///// GENERAL:
 ///

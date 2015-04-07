@@ -231,3 +231,18 @@ int ipmask::print(char *buf) const
     return int(buf-start);
 }
 
+void cutextension(char *str, char *ext)
+{
+	if(!str) return;
+	int len = strlen(str);
+	char *pos = NULL;
+	loopirev(len) if(str[i] == '.') { pos = &str[i]; break; }
+	if(ext && ext[0] == '.') ext++;
+	if(pos && (!ext || !strcmp(pos+1, ext))) pos[0] = '\0';
+}
+
+//cuts the extension of string str. if extension ext is specified, just this extension will be cut
+ICOMMAND(cutextension, "ss", (char *str, char *ext), 
+	cutextension(str, ext && ext[0] ? ext : NULL);
+	result(str ? str : ""); 
+);

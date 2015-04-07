@@ -707,6 +707,7 @@ extern void registertexture(const char *name);
 extern Texture *gettexture(const char *name);
 extern void resetslotshader();
 extern void setslotshader(Slot &s);
+extern void setslotshader(Slot &s, JSON *j);
 extern void linkslotshader(Slot &s, bool load = true);
 extern void linkvslotshader(VSlot &s, bool load = true);
 extern void linkslotshaders();

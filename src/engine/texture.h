@@ -1,3 +1,6 @@
+#ifndef TOOLS_H
+#define TOOLS_H
+
 // GL_ARB_vertex_program, GL_ARB_fragment_program
 extern PFNGLGENPROGRAMSARBPROC              glGenProgramsARB_;
 extern PFNGLDELETEPROGRAMSARBPROC           glDeleteProgramsARB_;
@@ -745,3 +748,4 @@ extern void mergevslot(VSlot &dst, const VSlot &src, const VSlot &delta);
 extern vector<Slot *> slots;
 extern vector<VSlot *> vslots;
 
+#endif // TOOLS_H

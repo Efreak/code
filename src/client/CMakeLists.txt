@@ -28,6 +28,7 @@ prepend(CLIENT_SOURCES_ENGINE ${SOURCE_DIR}/engine
     shader.cpp
     sound.cpp
     texture.cpp
+    textureset.cpp
     water.cpp
     world.cpp
     worldio.cpp

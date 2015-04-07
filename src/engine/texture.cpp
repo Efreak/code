@@ -1584,26 +1584,6 @@ void mergevslot(VSlot &dst, const VSlot &src, const VSlot &delta)
     mergevslot(dst, delta, delta.changed, src.slot);
 }
 
-static VSlot *reassignvslot(Slot &owner, VSlot *vs)
-{
-    owner.variants = vs;
-    while(vs)
-    {
-        vs->slot = &owner;
-        vs->linked = false;
-        vs = vs->next;
-    }
-    return owner.variants;
-}
-
-static VSlot *emptyvslot(Slot &owner)
-{
-    int offset = 0;
-    loopvrev(slots) if(slots[i]->variants) { offset = slots[i]->variants->index + 1; break; }
-    for(int i = offset; i < vslots.length(); i++) if(!vslots[i]->changed) return reassignvslot(owner, vslots[i]);
-    return vslots.add(new VSlot(&owner, vslots.length()));
-}
-
 static bool comparevslot(const VSlot &dst, const VSlot &src, int diff)
 {
     if(diff & (1<<VSLOT_SHPARAM)) 
@@ -1741,9 +1721,79 @@ void texture(char *type, char *name, int *rot, int *xoffset, int *yoffset, float
         vs.scale = *scale <= 0 ? 1 : *scale;
         propagatevslot(&vs, (1<<VSLOT_NUM)-1);
     }
+	//conoutf(CON_WARN, "old texture loaded, should it be converted?")
+}
+COMMAND(texture, "ssiiif");
+
+const char *jsontextures[8] = { "diffuse", "other", "decal", "normal", "glow", "spec", "depth", "envmap" };
+
+/// Loads a Texture into a Textureslot from a File/JSON
+void gettexinfofromjson(JSON *j)
+{
+    if(!j || slots.length()>=0x10000) return;
+    Slot &s = *slots.add(new Slot(slots.length()));
+    s.loaded = false;
+    loopi(8) //load textures
+    {
+        JSON *sub = j->getitem(jsontextures[i]);
+        if(!sub) continue;
+        char *name = sub->valuestring;
+        if(!*name) continue;
+        s.texmask |= 1<<i;
+        Slot::Tex &st = s.sts.add();
+        st.type = i;
+        st.combined = -1;
+        st.t = NULL;
+
+        if(strpbrk(name, "/\\") && *sub->currentdir) copystring(st.name, makerelpath(sub->currentdir, name)); //relative path to current folder
+        else copystring(st.name, name);
+        path(st.name);
+    }
+
+    setslotshader(s, j->getitem("shader"));
+
+    //other stuff:
+    JSON *scale = j->getitem("scale"), *rot = j->getitem("rotation"), 
+          *xoff = j->getitem("xoffset"), *yoff = j->getitem("yoffset");
+
+    VSlot &vs = *emptyvslot(s);
+    vs.reset();
+    vs.rotation = rot ? clamp(rot->valueint, 0, 5) : 0;
+    vs.xoffset = xoff ? max(xoff->valueint, 0) : 0;
+    vs.yoffset = yoff ? max(yoff->valueint, 0) : 0;
+    vs.scale =  scale ? scale->valuefloat : 1;
+    propagatevslot(&vs, (1<<VSLOT_NUM)-1);
 }
 
-COMMAND(texture, "ssiiif");
+void loadtexturedefinition(const char *filename)
+{
+    if(!filename || !*filename) return;
+    JSON *j = loadjson(filename);
+    if(!j) {
+        conoutf("could not load texture definition %s", filename); return;
+    }
+
+    gettexinfofromjson(j);
+    delete j;
+}
+COMMAND(loadtexturedefinition, "s");
+
+/// Loads all textures from a "textures" child of given JSON structure
+void loadtextures(JSON *parent)
+{
+    if(!parent) return;
+    JSON *j = parent->getitem("textures");
+    if(!j) return;
+
+    loopi(j->numchilds())
+    {
+        const char *name = j->getstring(i);
+        defformatstring(fn) ("%s", name);
+        if(strpbrk(name, "/\\")) formatstring(fn)("%s", makerelpath(j->currentdir, name)); //relative path to current folder
+        loadtexturedefinition(fn);
+    }
+}
+>>>>>>> 75ddfdf... Move the texture loading stuff to textureset.cpp
 
 void autograss(char *name)
 {
